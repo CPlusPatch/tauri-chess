@@ -4,8 +4,8 @@ export default class Piece {
 	style: {
 		backgroundImage: string,
 		backgroundColor: string,
-
 	};
+	classes: string;
 
 	constructor(playerId: number, iconUrl: string) {
 		this.playerId = playerId;
@@ -14,6 +14,7 @@ export default class Piece {
 			backgroundImage: "url('" + iconUrl + "')",
 			backgroundColor: ""
 		};
+		this.classes = "";
 	}
 
 	isMovePossible(src: number, dest: number, isDestEnemyOccupied: boolean): boolean {
