@@ -1,5 +1,3 @@
-import Piece from "../pieces/Piece";
-
 export default function Square({
 	onClick,
 	isSquareOdd,

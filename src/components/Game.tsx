@@ -1,7 +1,17 @@
 import React from "react";
 import initializeChessBoard from "../helpers/initializeChessBoard";
+import King from "../pieces/King";
 import Piece from "../pieces/Piece";
 import Board from "./Board";
+import Confetti from "react-confetti";
+import useWindowSize from "react-use/lib/useWindowSize";
+
+enum GameState {
+	WHITE_WON,
+	BLACK_WON,
+	INVALID_SELECTION,
+	IDLE
+}
 
 export default class Game extends React.Component {
 	state: {
@@ -10,10 +20,11 @@ export default class Game extends React.Component {
 		blackFallenSoldiers: Array<Piece>;
 		player: number;
 		sourceSelection: number;
-		status: string;
+		gameState: GameState;
 		turn: "white" | "black";
+		isGameOver: boolean;
 	};
-	
+
 	constructor(props: any) {
 		super(props);
 		this.state = {
@@ -22,27 +33,26 @@ export default class Game extends React.Component {
 			blackFallenSoldiers: [],
 			player: 1,
 			sourceSelection: -1,
-			status: "",
+			gameState: GameState.IDLE,
 			turn: "white",
+			isGameOver: false,
 		};
 	}
 
 	handleClick(i: number) {
 		var squares = this.state.squares.slice();
+		if (this.state.isGameOver) return;
 
 		if (this.state.sourceSelection === -1) {
 			if (!squares[i] || squares[i]!.playerId !== this.state.player) {
 				this.setState({
-					status:
-						"Wrong selection. Choose player " +
-						this.state.player +
-						" pieces.",
+					gameState: GameState.INVALID_SELECTION,
 				});
 				squares[i] ? squares[i]!.setBackgroundColor("") : null;
 			} else {
-				squares[i]!.setBackgroundColor("RGB(111,143,114)") // Emerald from http://omgchess.blogspot.com/2015/09/chess-board-color-schemes.html
+				squares[i]!.setBackgroundColor("RGB(111,143,114)"); // Emerald from http://omgchess.blogspot.com/2015/09/chess-board-color-schemes.html
 				this.setState({
-					status: "Choose destination for the selected piece",
+					gameState: GameState.IDLE,
 					sourceSelection: i,
 				});
 			}
@@ -51,7 +61,7 @@ export default class Game extends React.Component {
 			squares[this.state.sourceSelection]?.setBackgroundColor("");
 			if (squares[i] && squares[i]!.playerId === this.state.player) {
 				this.setState({
-					status: "Wrong selection. Choose valid source and destination again.",
+					gameState: GameState.INVALID_SELECTION,
 					sourceSelection: -1,
 				});
 			} else {
@@ -85,20 +95,35 @@ export default class Game extends React.Component {
 					console.log("blackFallenSoldiers", blackFallenSoldiers);
 					squares[i] = squares[this.state.sourceSelection];
 					squares[this.state.sourceSelection] = null;
-					let player = this.state.player === 1 ? 2 : 1;
-					let turn = this.state.turn === "white" ? "black" : "white";
-					this.setState({
-						sourceSelection: -1,
-						squares: squares,
-						whiteFallenSoldiers: whiteFallenSoldiers,
-						blackFallenSoldiers: blackFallenSoldiers,
-						player: player,
-						status: "",
-						turn: turn,
-					});
+					if (this.isGameOver(whiteFallenSoldiers, blackFallenSoldiers)) {
+						const winner =
+							this.isGameOver(whiteFallenSoldiers, blackFallenSoldiers) === "white" ? "White" : "Black";
+						console.info(`🎉 Congrats ${winner} for winning!`);
+						this.setState({
+							gameState: winner === "White" ? GameState.WHITE_WON : GameState.BLACK_WON,
+							sourceSelection: -1,
+							squares: squares,
+							whiteFallenSoldiers: whiteFallenSoldiers,
+							blackFallenSoldiers: blackFallenSoldiers,
+							isGameOver: true,
+						});
+					} else {
+						let player = this.state.player === 1 ? 2 : 1;
+						let turn = this.state.turn === "white" ? "black" : "white";
+						this.setState({
+							sourceSelection: -1,
+							squares: squares,
+							whiteFallenSoldiers: whiteFallenSoldiers,
+							blackFallenSoldiers: blackFallenSoldiers,
+							player: player,
+							gameState: GameState.IDLE,
+							turn: turn,
+						});
+					}
+
 				} else {
 					this.setState({
-						status: "Wrong selection. Choose valid source and destination again.",
+						gameState: GameState.INVALID_SELECTION,
 						sourceSelection: -1,
 					});
 				}
@@ -119,22 +144,72 @@ export default class Game extends React.Component {
 		return isLegal;
 	}
 
+	/**
+	* Check if the game is over, returns the winner if yes.
+	*/
+	isGameOver(
+		whiteFallenSoldiers: Array<Piece>,
+		blackFallenSoldiers: Array<Piece>,
+	): "white" | "black" | false {
+		for (let i = 0; i < whiteFallenSoldiers.slice().length; i++) {
+			if (whiteFallenSoldiers[i] instanceof King) return "black";
+		}
+		for (let i = 0; i < blackFallenSoldiers.slice().length; i++) {
+			if (blackFallenSoldiers[i] instanceof King) return "white";
+		}
+		return false;
+	}
+
 	render() {
 		return (
 			<div>
-				<div className="flex flex-row gap-4">
-					<div className="col-4">
+				<div className="flex gap-4 flex-row">
+					<div className="col-span-8">
 						<Board
 							squares={this.state.squares}
 							onClick={(i: number) => this.handleClick(i)}
 							turn={this.state.turn}
 						/>
 					</div>
-					<div className="col-3 font-sans font-black">
-						<h3>It is {this.state.turn.toUpperCase()}'s turn to play</h3>
+					<div className="font-sans font-black w-48">
+						{this.state.gameState === GameState.IDLE ? (
+							<h3>
+								Playing&nbsp;&middot;&nbsp;
+								{this.state.turn === "white"
+									? "White"
+									: "Black"}
+								's turn
+							</h3>
+						) : (
+							<></>
+						)}
+						{this.state.gameState ===
+						GameState.INVALID_SELECTION ? (
+							<h3 className="text-red-600">Invalid selection</h3>
+						) : (
+							<></>
+						)}
+						{this.state.gameState === GameState.WHITE_WON ? (
+							<>
+								<Confetti width={window.innerWidth} height={window.innerHeight}/>
+								<h3>🥳 White wins!</h3>
+							</>
+						) : (
+							<></>
+						)}
+						{this.state.gameState === GameState.BLACK_WON ? (
+							<>
+								<Confetti width={window.innerWidth} height={window.innerHeight} />
+								<h3>🥳 Black wins!</h3>
+							</>
+						) : (
+							<></>
+						)}
 						<div>
-							Pieces lost:<br/>
-							White: {this.state.whiteFallenSoldiers.length}<br/>
+							Pieces lost:
+							<br />
+							White: {this.state.whiteFallenSoldiers.length}
+							<br />
 							Black: {this.state.blackFallenSoldiers.length}
 						</div>
 					</div>

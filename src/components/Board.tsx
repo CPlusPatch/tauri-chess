@@ -46,7 +46,7 @@ export default class Board extends React.Component {
 		}
 
 		return (
-			<div className={`flex justify-center flex-col items-center overflow-hidden ease-in-out rounded-sm duration-700 ${this.props.turn == "white" ? "" : "rotate-180"}`}>
+			<div id="board" className={`flex justify-center flex-col items-center overflow-hidden ease-in-out rounded-sm duration-700 ${this.props.turn == "white" ? "" : "rotate-180"}`}>
 				{board}
 			</div>
 		);
