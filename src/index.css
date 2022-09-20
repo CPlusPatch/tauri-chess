@@ -25,6 +25,10 @@ body {
 	overflow: hidden;
 }
 
+html, body {
+	background-color: transparent;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
