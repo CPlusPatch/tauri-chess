@@ -6,12 +6,14 @@ export default function Square({
 	turn,
 	style,
 	keyVal,
+	image
 }: {
 	onClick: Function;
 	isSquareOdd: boolean;
 	turn: "white" | "black";
 	style: any;
 	keyVal: any;
+	image: string;
 }) {
 	return (
 		<button
@@ -19,11 +21,12 @@ export default function Square({
 			onClick={(e) => {
 				onClick(e);
 			}}
-			className={`bg-transparent border-solid h-12 hover:scale-105 duration-200 hover:shadow-md
-			w-12 p-0 m-0 text-center outline-0 bg-cover outline-none z-10 border-0 hover:z-50
+			className={`bg-transparent h-12 hover:scale-105 duration-200 hover:shadow-md
+			w-12 p-0 m-0 text-center outline-0 bg-cover outline-none z-10 border-0 border-none hover:z-50
 			${isSquareOdd ? "bg-gray-700" : "bg-gray-100"}
-			${turn == "white" ? "" : "rotate-180"}`}>
-			<div className="w-full h-full bg-cover" style={style}></div>
+			${turn == "white" ? "" : "rotate-180"}`}
+			style={style}>
+			{(image) ? <img className="w-full h-full" src={image}/> : null}
 		</button>
 	);
 }

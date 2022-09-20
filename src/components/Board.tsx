@@ -1,8 +1,13 @@
 import React from "react";
+import Piece from "../pieces/Piece";
 import Square from "./Square";
 
 export default class Board extends React.Component {
-	props: any;
+	props: {
+		squares: Array<Piece | null>;
+		onClick: Function;
+		turn: "white" | "black";
+	};
 	constructor(props: any) {
 		super(props);
 		this.props = props;
@@ -14,8 +19,9 @@ export default class Board extends React.Component {
 				keyVal={i}
 				key={i}
 				style={
-					this.props.squares[i] ? this.props.squares[i].style : null
+					this.props.squares[i] ? this.props.squares[i]!.style : null
 				}
+				image={this.props.squares[i] ? this.props.squares[i]!.iconUrl : ""}
 				isSquareOdd={isSquareOdd}
 				onClick={() => this.props.onClick(i)}
 				turn={this.props.turn}

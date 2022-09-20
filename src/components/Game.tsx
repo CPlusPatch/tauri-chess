@@ -11,7 +11,7 @@ export default class Game extends React.Component {
 		player: number;
 		sourceSelection: number;
 		status: string;
-		turn: string;
+		turn: "white" | "black";
 	};
 	
 	constructor(props: any) {

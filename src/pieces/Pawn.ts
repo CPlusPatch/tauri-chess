@@ -9,8 +9,8 @@ export default class Pawn extends Piece {
 		super(
 			playerId,
 			playerId === 1
-			? "https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg"
-			: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg"
+			? "/pawn_white.svg"
+			: "/pawn_black.svg"
 		);
 		this.initialPositions = {
 			1: [48, 49, 50, 51, 52, 53, 54, 55],

@@ -2,7 +2,6 @@ export default class Piece {
 	playerId: number;
 	iconUrl: string;
 	style: {
-		backgroundImage: string,
 		backgroundColor: string,
 	};
 	classes: string;
@@ -11,7 +10,6 @@ export default class Piece {
 		this.playerId = playerId;
 		this.iconUrl = iconUrl;
 		this.style = {
-			backgroundImage: "url('" + iconUrl + "')",
 			backgroundColor: ""
 		};
 		this.classes = "";
