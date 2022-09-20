@@ -18,6 +18,7 @@ export default class Board extends React.Component {
 				}
 				isSquareOdd={isSquareOdd}
 				onClick={() => this.props.onClick(i)}
+				turn={this.props.turn}
 			/>
 		);
 	}
@@ -39,7 +40,7 @@ export default class Board extends React.Component {
 		}
 
 		return (
-			<div className="flex justify-center flex-col items-center overflow-hidden rounded-sm">
+			<div className={`flex justify-center flex-col items-center overflow-hidden ease-in-out rounded-sm duration-700 ${this.props.turn == "white" ? "" : "rotate-180"}`}>
 				{board}
 			</div>
 		);

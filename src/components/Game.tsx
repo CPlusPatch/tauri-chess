@@ -127,6 +127,7 @@ export default class Game extends React.Component {
 						<Board
 							squares={this.state.squares}
 							onClick={(i: number) => this.handleClick(i)}
+							turn={this.state.turn}
 						/>
 					</div>
 					<div className="col-3 font-sans font-black">
