@@ -190,18 +190,17 @@ export default class Game extends React.Component {
 							<></>
 						)}
 						{this.state.gameState === GameState.WHITE_WON ? (
-							<>
-								<Confetti width={window.innerWidth} height={window.innerHeight}/>
-								<h3>🥳 White wins!</h3>
-							</>
+							<h3>🥳 White wins!</h3>
 						) : (
 							<></>
 						)}
 						{this.state.gameState === GameState.BLACK_WON ? (
-							<>
-								<Confetti width={window.innerWidth} height={window.innerHeight} />
-								<h3>🥳 Black wins!</h3>
-							</>
+							<h3>🥳 Black wins!</h3>
+						) : (
+							<></>
+						)}
+						{this.state.isGameOver === true ? (
+							<Confetti width={window.innerWidth} height={window.innerHeight}/>
 						) : (
 							<></>
 						)}
