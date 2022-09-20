@@ -122,19 +122,20 @@ export default class Game extends React.Component {
 	render() {
 		return (
 			<div>
-				<div className="game">
-					<div className="game-board">
+				<div className="flex flex-row gap-4">
+					<div className="col-4">
 						<Board
 							squares={this.state.squares}
 							onClick={(i: number) => this.handleClick(i)}
 						/>
 					</div>
-					<div className="game-info">
-						<h3>Turn</h3>
-						<div
-							id="player-turn-box"
-							style={{ backgroundColor: this.state.turn }}></div>
-						<div className="game-status">{this.state.status}</div>
+					<div className="col-3 font-sans font-black">
+						<h3>It is {this.state.turn.toUpperCase()}'s turn to play</h3>
+						<div>
+							Pieces lost:<br/>
+							White: {this.state.whiteFallenSoldiers.length}<br/>
+							Black: {this.state.blackFallenSoldiers.length}
+						</div>
 					</div>
 				</div>
 			</div>

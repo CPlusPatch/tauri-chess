@@ -8,7 +8,7 @@ export default class Board extends React.Component {
 		this.props = props;
 	}
 
-	renderSquare(i: number, colorTheme: "light" | "dark") {
+	renderSquare(i: number, isSquareOdd: boolean) {
 		return (
 			<Square
 				keyVal={i}
@@ -16,7 +16,7 @@ export default class Board extends React.Component {
 				style={
 					this.props.squares[i] ? this.props.squares[i].style : null
 				}
-				colorTheme={colorTheme}
+				isSquareOdd={isSquareOdd}
 				onClick={() => this.props.onClick(i)}
 			/>
 		);
@@ -27,20 +27,22 @@ export default class Board extends React.Component {
 		for (let i = 0; i < 8; i++) {
 			const squareRows = [];
 			for (let j = 0; j < 8; j++) {
-				const colorTheme =
-					(isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j))
-						? "light"
-						: "dark";
-				squareRows.push(this.renderSquare(i * 8 + j, colorTheme));
+				const isSquareOdd =
+					(isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j));
+				squareRows.push(this.renderSquare(i * 8 + j, !isSquareOdd));
 			}
-			board.push(<div className="flex-row grow-0 h-12 w-[24rem]" key={i}>{squareRows}</div>);
+			board.push(
+				<div className="flex-row grow-0 h-12 w-[24rem]" key={i}>
+					{squareRows}
+				</div>
+			);
 		}
 
 		return (
-			<div className="flex justify-center flex-col items-center">
+			<div className="flex justify-center flex-col items-center overflow-hidden rounded-sm">
 				{board}
 			</div>
-		)
+		);
 	}
 }
 
